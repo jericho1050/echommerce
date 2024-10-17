@@ -1,0 +1,1 @@
+export const SALEOR_API_URL = import.meta.env.VITE_SALEOR_API_URL;
