@@ -2,14 +2,14 @@ import React from "react";
 import { Box, Button, Typography, Container, Grid2 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import CategoryPanel from "./CategoryPanel";
-import CarouselItem from "./CarouselItem";
+
 import TrendingCarousel from "../Carousel/TrendingCarousel";
 const StyledHeroSection = styled(Box)(({ theme }) => ({
   borderRadius: "0px 0px 0px 0px",
 }));
 
 const StyledGrid = styled(Grid2)(({ theme }) => ({
-  gap: "20px",
+  gap: "1em",
   [theme.breakpoints.down("md")]: {
     flexDirection: "column",
     alignItems: "stretch",
@@ -68,13 +68,17 @@ function HeroSection() {
       <Container>
         <StyledGrid container>
           <Grid2 item xs={12} md={6}>
+          </Grid2>
+          <Grid2 item>
+            <TrendingCarousel />
+          </Grid2>
+        </StyledGrid>
             <Box sx={{ display: "flex" }}>
               <CategoryPanel
                 image="https://imgur.com/nta9pez.jpg"
                 buttonText="APPARELS"
                 backgroundColor="#FFFFFF"
                 color="#3F71AF"
-
               />
               <CategoryPanel
                 image="https://imgur.com/Vf6dwM2.jpg"
@@ -83,11 +87,6 @@ function HeroSection() {
                 color="#3F71AF"
               />
             </Box>
-          </Grid2>
-          <Grid2 item>
-            <TrendingCarousel />
-          </Grid2>
-        </StyledGrid>
       </Container>
     </StyledHeroSection>
   );

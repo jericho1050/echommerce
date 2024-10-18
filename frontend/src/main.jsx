@@ -12,12 +12,9 @@ import SellerDashboard from "./routes/Seller/Seller";
 import Root from "./routes/Root";
 import ErrorPage from "./error-page";
 import Index from "./routes/Index";
-import { configureStore } from "@reduxjs/toolkit";
-import rootReducer from "./slices";
 import { Provider } from "react-redux";
 import ProductPage from "./components/Product/ProductPage";
-
-const store = configureStore({ reducer: rootReducer });
+import store from "./slices/store";
 
 const theme = createTheme({
   palette: {

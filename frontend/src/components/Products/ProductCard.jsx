@@ -1,3 +1,4 @@
+
 import React from "react";
 import styled from "styled-components";
 import { Card, CardContent, Typography } from "@mui/material";
@@ -10,7 +11,7 @@ function ProductCard({ image, name, price, id }) {
         <ProductImage src={image || default_image} alt={name} loading="lazy" />
         <CardContent>
           <Typography variant="body1">{name}</Typography>
-          <Typography variant="h6">{price}</Typography>
+          <Typography variant="h6">${price}</Typography>
         </CardContent>
       </StyledCard>
     </StyledLink>
@@ -28,6 +29,8 @@ const StyledCard = styled(Card)`
   justify-content: flex-start;
   padding: 1em;
   border: 1px solid rgba(217, 217, 217, 1);
+  height: 100%;
+  width: 100%;
   &:hover {
     cursor: pointer;
     transform: translateY(-4px);
@@ -35,8 +38,9 @@ const StyledCard = styled(Card)`
 `;
 
 const ProductImage = styled.img`
-  width: 100%;
+  aspect-ratio: 3 / 3;
   height: 300px; /* Set a fixed height for the images */
+
   object-fit: cover;
   object-position: center;
 `;

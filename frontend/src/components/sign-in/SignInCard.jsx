@@ -80,7 +80,7 @@ export default function SignInCard() {
 
     submit(response, {
       method: 'post',
-      action: '/signin',
+      action: '/signup',
       // how to submit json
       encType: 'application/json',
     });

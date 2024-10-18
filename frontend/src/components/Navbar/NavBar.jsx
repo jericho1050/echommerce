@@ -8,6 +8,7 @@ import UserMenu from "./UserMenu";
 
 import CartButton from "./Cart";
 import NotificationButton from "./Notification";
+import { Link } from "react-router-dom";
 const StyledAppBar = styled(AppBar)`
   background-color: rgba(63, 113, 175, 1);
   box-shadow: 0px 2px 16px rgba(0, 0, 0, 0.12);
@@ -36,25 +37,25 @@ const RightSection = styled.div`
 
 function Navbar() {
   return (
-
-      <StyledAppBar position="sticky">
-        <StyledToolbar>
-          <LeftSection>
-            <Logo />
-            <Typography variant="h4" component="h1" sx={{ ml: "-1em" }}>
+    <StyledAppBar position="sticky">
+      <StyledToolbar>
+        <LeftSection>
+          <Logo />
+          <Typography variant="h4" component="h1" sx={{ ml: "-1em" }}>
+            <Link to="/" style={{ textDecoration: "none", color: "white" }}>
               Echommerce
-            </Typography>
-            <NavLinks />
-          </LeftSection>
-          <RightSection>
-            <SearchBar />
-            <CartButton />
-            <NotificationButton />
-            <UserMenu />
-          </RightSection>
-        </StyledToolbar>
-      </StyledAppBar>
-
+            </Link>
+          </Typography>
+          <NavLinks />
+        </LeftSection>
+        <RightSection>
+          {/* <SearchBar /> */}
+          <CartButton />
+          <NotificationButton />
+          <UserMenu />
+        </RightSection>
+      </StyledToolbar>
+    </StyledAppBar>
   );
 }
 

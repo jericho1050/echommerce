@@ -16,8 +16,8 @@ const StyledButton = styled(Button)`
 function NavLinks() {
   return (
     <NavLinksContainer>
-      <StyledButton>Sell</StyledButton>
-      <StyledButton>Explore</StyledButton>
+      <StyledButton disabled>Sell</StyledButton>
+      <StyledButton disabled>Explore</StyledButton>
     </NavLinksContainer>
   );
 }

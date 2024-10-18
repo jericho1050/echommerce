@@ -103,8 +103,7 @@ const CarouselContainer = styled(Box)`
   display: flex;
   justify-content: center;
   gap: 16px;
-  padding: 16px 32px;
-  width: 100%;
+  padding: 0px 1em;
   flex-shrink: 0;
   @media (max-width: 991px) {
     padding: 0 20px;

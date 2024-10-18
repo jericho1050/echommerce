@@ -1,29 +1,23 @@
-/* eslint-disable no-unused-vars */
-import * as React from "react";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Checkbox from "@mui/material/Checkbox";
-import CssBaseline from "@mui/material/CssBaseline";
-import Divider from "@mui/material/Divider";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import FormLabel from "@mui/material/FormLabel";
-import FormControl from "@mui/material/FormControl";
-import Link from "@mui/material/Link";
-import TextField from "@mui/material/TextField";
-import Typography from "@mui/material/Typography";
-import Stack from "@mui/material/Stack";
-import MuiCard from "@mui/material/Card";
-import { createTheme, ThemeProvider, styled } from "@mui/material/styles";
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { register, selectAuth } from "../../slices/auth";
 import {
-  GoogleIcon,
-  FacebookIcon,
-  SitemarkIcon,
-  EchosMarketIcon,
-} from "../CustomIcons";
-// import TemplateFrame from './TemplateFrame';
+  TextField,
+  Button,
+  Typography,
+  Box,
+  FormControl,
+  FormLabel,
+  FormControlLabel,
+  Checkbox,
+  Divider,
+  Link,
+} from "@mui/material";
+import { GoogleIcon, FacebookIcon } from "../CustomIcons";
+import { styled } from "@mui/material/styles";
+import MuiCard from "@mui/material/Card";
 import propTypes from "prop-types";
 import { useSubmit } from "react-router-dom";
-
 const Card = styled(MuiCard)(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
@@ -43,53 +37,27 @@ const Card = styled(MuiCard)(({ theme }) => ({
   }),
 }));
 
-export default function SignUp({ role }) {
-  const [mode, setMode] = React.useState("light");
-  const [showCustomTheme, setShowCaustomTheme] = React.useState(true);
-  const defaultTheme = createTheme({ palette: { mode } });
-  const [firstNameError, setFirstNameError] = React.useState(false);
-  const [firstNameErrorMessage, setFirstNameErrorMessage] = React.useState("");
-  const [lastNameError, setLastNameError] = React.useState(false);
-  const [lastNameErrorMessage, setLastNameErrorMessage] = React.useState("");
-  const [emailError, setEmailError] = React.useState(false);
-  const [emailErrorMessage, setEmailErrorMessage] = React.useState("");
-  const [passwordError, setPasswordError] = React.useState(false);
-  const [passwordErrorMessage, setPasswordErrorMessage] = React.useState("");
+export default function SignUpCard({ role }) {
+  const dispatch = useDispatch();
+  const { status, error } = useSelector(selectAuth);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [firstNameError, setFirstNameError] = useState(false);
+  const [firstNameErrorMessage, setFirstNameErrorMessage] = useState("");
+  const [lastNameError, setLastNameError] = useState(false);
+  const [lastNameErrorMessage, setLastNameErrorMessage] = useState("");
+  const [emailError, setEmailError] = useState(false);
+  const [emailErrorMessage, setEmailErrorMessage] = useState("");
+  const [passwordError, setPasswordError] = useState(false);
+  const [passwordErrorMessage, setPasswordErrorMessage] = useState("");
   const submit = useSubmit();
-  // This code only runs on the client side, to determine the system color preference
-  // React.useEffect(() => {
-  //   // Check if there is a preferred mode in localStorage
-  //   const savedMode = localStorage.getItem('themeMode');
-  //   if (savedMode) {
-  //     setMode(savedMode);
-  //   } else {
-  //     // If no preference is found, it uses system preference
-  //     const systemPrefersDark = window.matchMedia(
-  //       '(prefers-color-scheme: dark)'
-  //     ).matches;
-  //     setMode(systemPrefersDark ? 'dark' : 'light');
-  //   }
-  // }, []);
-
-  // const toggleColorMode = () => {
-  //   const newMode = mode === 'dark' ? 'light' : 'dark';
-  //   setMode(newMode);
-  //   localStorage.setItem('themeMode', newMode); // Save the selected mode to localStorage
-  // };
-
-  // const toggleCustomTheme = () => {
-  //   setShowCustomTheme((prev) => !prev);
-  // };
 
   const validateInputs = () => {
-    const email = document.getElementById("email");
-    const password = document.getElementById("password");
-    const firstName = document.getElementById("first-name");
-    const lastName = document.getElementById("last-name");
-
     let isValid = true;
 
-    if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
+    if (!email || !/\S+@\S+\.\S+/.test(email)) {
       setEmailError(true);
       setEmailErrorMessage("Please enter a valid email address.");
       isValid = false;
@@ -98,7 +66,7 @@ export default function SignUp({ role }) {
       setEmailErrorMessage("");
     }
 
-    if (!password.value || password.value.length < 6) {
+    if (!password || password.length < 6) {
       setPasswordError(true);
       setPasswordErrorMessage("Password must be at least 6 characters long.");
       isValid = false;
@@ -107,15 +75,16 @@ export default function SignUp({ role }) {
       setPasswordErrorMessage("");
     }
 
-    if (!firstName.value || firstName.value.length < 1) {
+    if (!firstName || firstName.length < 1) {
       setFirstNameError(true);
-      setFirstNameErrorMessage("First mame is required.");
+      setFirstNameErrorMessage("First name is required.");
       isValid = false;
     } else {
       setFirstNameError(false);
       setFirstNameErrorMessage("");
     }
-    if (!lastName.value || lastName.value.length < 1) {
+
+    if (!lastName || lastName.length < 1) {
       setLastNameError(true);
       setLastNameErrorMessage("Last name is required.");
       isValid = false;
@@ -129,59 +98,29 @@ export default function SignUp({ role }) {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    if (firstNameError || emailError || passwordError) {
+    if (!validateInputs()) {
       return;
     }
-    const formData = new FormData(event.currentTarget);
-    formData.append("role", role);
-    const data = Object.fromEntries(formData.entries());
-    const { email, first_name, last_name, password } = data;
+    const action = await dispatch(
+      register({
+        email,
+        first_name: firstName,
+        last_name: lastName,
+        password,
+        role,
+      })
+    );
 
-    try {
-      const response = await fetch(
-        import.meta.env.VITE_REST_API_URL + "/api/register/",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email,
-            first_name,
-            last_name,
-            password,
-            role,
-          }),
-        }
+    if (register.fulfilled.match(action)) {
+      submit(
+        { role: role },
+        { method: "post", action: "/signup",}
       );
-
-      if (!response.ok) {
-        if (response.status === 500) {
-          setEmailErrorMessage(
-            "This email address has already been registered before."
-          );
-          setEmailError(true);
-        } else {
-          throw new Error("Registration failed");
-        }
-        return;
-      }
-
-      // If registration is successful, submit the form data
-      submit(data, {
-        method: "post",
-      });
-    } catch (error) {
-      setEmailError(true);
-      setEmailErrorMessage("Please enter a valid email address.");
-      console.error("Registration error:", error);
     }
   };
 
   return (
     <>
-      {" "}
-      <CssBaseline enableColorScheme />
       <Card variant="outlined">
         <Typography
           component="h1"
@@ -204,6 +143,8 @@ export default function SignUp({ role }) {
                 required
                 id="first-name"
                 placeholder="e.g., Jon"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
                 error={firstNameError}
                 helperText={firstNameErrorMessage}
                 color={firstNameError ? "error" : "primary"}
@@ -217,6 +158,8 @@ export default function SignUp({ role }) {
                 required
                 id="last-name"
                 placeholder="e.g., now"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
                 error={lastNameError}
                 helperText={lastNameErrorMessage}
                 color={lastNameError ? "error" : "primary"}
@@ -233,9 +176,11 @@ export default function SignUp({ role }) {
               name="email"
               autoComplete="email"
               variant="outlined"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               error={emailError}
               helperText={emailErrorMessage}
-              color={passwordError ? "error" : "primary"}
+              color={emailError ? "error" : "primary"}
             />
           </FormControl>
           <FormControl>
@@ -249,6 +194,8 @@ export default function SignUp({ role }) {
               id="password"
               autoComplete="new-password"
               variant="outlined"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               error={passwordError}
               helperText={passwordErrorMessage}
               color={passwordError ? "error" : "primary"}
@@ -258,14 +205,13 @@ export default function SignUp({ role }) {
             control={<Checkbox value="allowExtraEmails" color="primary" />}
             label="I want to receive updates via email."
           />
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            onClick={validateInputs}
-          >
+          <Button type="submit" fullWidth variant="contained">
             Sign up
           </Button>
+          {status === "loading" && <Typography>Loading...</Typography>}
+          {status === "failed" && (
+            <Typography color="error">{error}</Typography>
+          )}
           <Typography sx={{ textAlign: "center" }}>
             Already have an account?{" "}
             <span>
@@ -301,6 +247,6 @@ export default function SignUp({ role }) {
   );
 }
 
-SignUp.propTypes = {
+SignUpCard.propTypes = {
   role: propTypes.string,
 };
