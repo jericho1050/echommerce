@@ -30,7 +30,7 @@ export const { getProduct, getProductSuccess, getProductFailure } =
 export const productSelector = (state) => state.product;
 export default productSlice.reducer;
 
-export function fetchproduct(id) {
+export function fetchProduct(id) {
   return async (dispatch) => {
     dispatch(getProduct());
 

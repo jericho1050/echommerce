@@ -15,6 +15,7 @@ import Index from "./routes/Index";
 import { configureStore } from "@reduxjs/toolkit";
 import rootReducer from "./slices";
 import { Provider } from "react-redux";
+import ProductPage from "./components/Product/ProductPage";
 
 const store = configureStore({ reducer: rootReducer });
 
@@ -46,6 +47,11 @@ const router = createBrowserRouter([
             index: true,
             element: <Index />,
           },
+          {
+            path: "product/:productId",
+            element: <ProductPage />
+
+          }
         ],
       },
     ],
@@ -64,6 +70,7 @@ const router = createBrowserRouter([
     path: "/seller/*",
     element: <SellerDashboard />,
   },
+  
 ]);
 
 createRoot(document.getElementById("root")).render(

@@ -1,5 +1,5 @@
 import HeroSection from "../components/HeroSection/HeroSection";
-import ProductGrid from "../components/Product/ProductGrid";
+import ProductGrid from "../components/Products/ProductGrid";
 import { fetchProducts, productsSelector } from "../slices/products";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
