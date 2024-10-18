@@ -17,6 +17,7 @@ import { GoogleIcon, FacebookIcon, EchosMarketIcon } from '../CustomIcons';
 import { useSubmit } from 'react-router-dom';
 
 import { CircularProgress } from '@mui/material';
+import { SellRounded } from '@mui/icons-material';
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
@@ -127,7 +128,7 @@ export default function SignInCard() {
         variant='h4'
         sx={{ width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)' }}
       >
-        Sign in
+        Sign in as <strong>SHOPPER</strong>
       </Typography>
       <Box
         component='form'
@@ -205,6 +206,14 @@ export default function SignInCard() {
       </Box>
       <Divider>or</Divider>
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+      <Button
+          fullWidth
+          variant='outlined'
+          onClick={() => alert('Sign in with Google')}
+          startIcon={<SellRounded />}
+        >
+          Go to Seller Dashboard
+        </Button>
         <Button
           fullWidth
           variant='outlined'

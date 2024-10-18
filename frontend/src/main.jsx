@@ -1,56 +1,77 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
 
-import './index.css'
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import { createTheme, ThemeProvider } from '@mui/material'
-import SignIn, {action as signInAction} from './components/sign-in/SignIn'
-import AuthProvider from './context/AuthContext'
-import SignUpSide, {action as signUpAction} from './components/sign-up/SignUp'
-import SellerDashboard from './routes/Seller/Seller'
+import "./index.css";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createTheme, ThemeProvider } from "@mui/material";
+import SignIn, { action as signInAction } from "./components/sign-in/SignIn";
+import SignUpSide, {
+  action as signUpAction,
+} from "./components/sign-up/SignUp";
+import SellerDashboard from "./routes/Seller/Seller";
+import Root from "./routes/Root";
+import ErrorPage from "./error-page";
+import Index from "./routes/Index";
+import { configureStore } from "@reduxjs/toolkit";
+import rootReducer from "./slices";
+import { Provider } from "react-redux";
 
-const theme = createTheme( {
+const store = configureStore({ reducer: rootReducer });
+
+const theme = createTheme({
   palette: {
-    mode: 'light',
+    mode: "light",
     primary: {
-      main: '#3F71AF'
+      main: "#3F71AF",
     },
     secondary: {
-      main: '#112D4E'
+      main: "#112D4E",
     },
     background: {
-      default: 'F9F7F7'
-    }
-  }
-})
+      default: "F9F7F7",
+    },
+  },
+});
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <div>YAWA</div>
+    element: <Root />,
+    errorElement: <ErrorPage />,
+    children: [
+      {
+        errorElement: <ErrorPage />,
+        children: [
+          {
+            index: true,
+            element: <Index />,
+          },
+        ],
+      },
+    ],
   },
   {
     path: "/signin",
     element: <SignIn />,
-    action: signInAction
+    action: signInAction,
   },
   {
     path: "/signup",
     element: <SignUpSide />,
-    action: signUpAction
+    action: signUpAction,
   },
   {
     path: "/seller/*",
-    element: <SellerDashboard />
-  }
-])
+    element: <SellerDashboard />,
+  },
+]);
 
-createRoot(document.getElementById('root')).render(
+createRoot(document.getElementById("root")).render(
   <StrictMode>
     <ThemeProvider theme={theme}>
-      <AuthProvider>
+      <Provider store={store}>
         <RouterProvider router={router} />
-      </AuthProvider>
+      </Provider>
     </ThemeProvider>
-  </StrictMode>,
-)
+  </StrictMode>
+);

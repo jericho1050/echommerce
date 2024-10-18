@@ -5,3 +5,20 @@ html {
 * {
   font-family: 'Roboto', sans-serif;
 }
+
+body {
+  padding: 0;
+  margin: 0;
+}
+
+section:nth-child(1) {
+  padding: 2em;
+}
+
+#error-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}

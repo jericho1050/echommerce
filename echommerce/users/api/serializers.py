@@ -3,14 +3,10 @@ from rest_framework import serializers
 from echommerce.users.models import User
 
 
-class UserSerializer(serializers.ModelSerializer[User]):
+class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ["email", "name", "url"]
-
-        extra_kwargs = {
-            "url": {"view_name": "api:user-detail", "lookup_field": "email"},
-        }
+        fields = ["email", "name", "role", "id", "first_name", "last_name"]
 
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)

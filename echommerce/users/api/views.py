@@ -10,22 +10,24 @@ from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from echommerce.users.models import User
 from rest_framework.permissions import AllowAny
-
+from rest_framework.viewsets import GenericViewSet
 from .serializers import UserSerializer, RegisterSerializer, CustomAuthTokenSerializer
 
 
 class UserViewSet(RetrieveModelMixin, ListModelMixin, UpdateModelMixin, GenericViewSet):
     serializer_class = UserSerializer
     queryset = User.objects.all()
-    lookup_field = "email"
+    
+    def get_permissions(self):
+        if self.action == "list" or self.action == "retrieve":
+            return [AllowAny()]
+        return super().get_permissions() 
 
-    def get_queryset(self, *args, **kwargs):
-        assert isinstance(self.request.user.id, int)
-        return self.queryset.filter(id=self.request.user.id)
 
+    # new route to get the current user details at /users/me/
     @action(detail=False)
     def me(self, request):
-        serializer = UserSerializer(request.user, context={"request": request})
+        serializer = UserSerializer(request.user)
         return Response(status=status.HTTP_200_OK, data=serializer.data)
 
 
