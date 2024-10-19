@@ -1,49 +1,51 @@
-import * as React from 'react';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import MuiCard from '@mui/material/Card';
-import Checkbox from '@mui/material/Checkbox';
-import Divider from '@mui/material/Divider';
-import FormLabel from '@mui/material/FormLabel';
-import FormControl from '@mui/material/FormControl';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Link from '@mui/material/Link';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
-import { styled } from '@mui/material/styles';
+import * as React from "react";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import MuiCard from "@mui/material/Card";
+import Checkbox from "@mui/material/Checkbox";
+import Divider from "@mui/material/Divider";
+import FormLabel from "@mui/material/FormLabel";
+import FormControl from "@mui/material/FormControl";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Link from "@mui/material/Link";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+import { styled } from "@mui/material/styles";
+import { login, logout, authSelector } from "../../slices/auth";
 
-import ForgotPassword from './ForgotPassword';
-import { GoogleIcon, FacebookIcon, EchosMarketIcon } from '../CustomIcons';
-import { useSubmit } from 'react-router-dom';
-
-import { CircularProgress } from '@mui/material';
-import { SellRounded } from '@mui/icons-material';
+import ForgotPassword from "./ForgotPassword";
+import { GoogleIcon, FacebookIcon, EchosMarketIcon } from "../CustomIcons";
+import { useNavigate, useSubmit } from "react-router-dom";
+import { CircularProgress } from "@mui/material";
+import { SellRounded } from "@mui/icons-material";
+import { useDispatch } from "react-redux";
 const Card = styled(MuiCard)(({ theme }) => ({
-  display: 'flex',
-  flexDirection: 'column',
-  alignSelf: 'center',
-  width: '100%',
+  display: "flex",
+  flexDirection: "column",
+  alignSelf: "center",
+  width: "100%",
   padding: theme.spacing(4),
   gap: theme.spacing(2),
   boxShadow:
-    'hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px',
-  [theme.breakpoints.up('sm')]: {
-    width: '450px',
+    "hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px",
+  [theme.breakpoints.up("sm")]: {
+    width: "450px",
   },
-  ...theme.applyStyles('dark', {
+  ...theme.applyStyles("dark", {
     boxShadow:
-      'hsla(220, 30%, 5%, 0.5) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.08) 0px 15px 35px -5px',
+      "hsla(220, 30%, 5%, 0.5) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.08) 0px 15px 35px -5px",
   }),
 }));
 
 export default function SignInCard() {
   const [emailError, setEmailError] = React.useState(false);
-  const [emailErrorMessage, setEmailErrorMessage] = React.useState('');
+  const [emailErrorMessage, setEmailErrorMessage] = React.useState("");
   const [passwordError, setPasswordError] = React.useState(false);
-  const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
+  const [passwordErrorMessage, setPasswordErrorMessage] = React.useState("");
   const [open, setOpen] = React.useState(false);
   const submit = useSubmit();
-
+  const dispatch = useDispatch();
+  const navigate = useNavigate('');
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -52,62 +54,58 @@ export default function SignInCard() {
     setOpen(false);
   };
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
     if (emailError || passwordError) {
       return;
     }
     const data = new FormData(event.currentTarget);
-
-    const response = await fetch(import.meta.env.VITE_REST_API_URL + '/api/auth-token/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-  
-      body: JSON.stringify(Object.fromEntries(data)),
-    })
-
-    if (response.status !== 200) {
-      setEmailError(true);
-      setEmailErrorMessage('Invalid email or password');
-      setPasswordError(true);
-      setPasswordErrorMessage('Invalid email or password');
-      console.error(response);
-      return;
-    }
-
-    submit(response, {
-      method: 'post',
-      action: '/signup',
-      // how to submit json
-      encType: 'application/json',
+    dispatch(
+      login({ email: data.get("email"), password: data.get("password") })
+    ).then((action) => {
+      const { status, role, token } = action.payload;
+      if (!login.fulfilled.match(action) || status === "failed") {
+        setEmailError(true);
+        setEmailErrorMessage("Invalid email or password");
+        setPasswordError(true);
+        setPasswordErrorMessage("Invalid email or password");
+        console.error(action);
+        return;
+      }
+      submit(
+        { role: role, token: token },
+        {
+          method: "post",
+          action: "/signin",
+          // how to submit json
+          encType: "application/json",
+        }
+      );
     });
   };
 
   const validateInputs = () => {
-    const email = document.getElementById('email');
-    const password = document.getElementById('password');
+    const email = document.getElementById("email");
+    const password = document.getElementById("password");
 
     let isValid = true;
 
     if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
       setEmailError(true);
-      setEmailErrorMessage('Please enter a valid email address.');
+      setEmailErrorMessage("Please enter a valid email address.");
       isValid = false;
     } else {
       setEmailError(false);
-      setEmailErrorMessage('');
+      setEmailErrorMessage("");
     }
 
     if (!password.value || password.value.length < 6) {
       setPasswordError(true);
-      setPasswordErrorMessage('Password must be at least 6 characters long.');
+      setPasswordErrorMessage("Password must be at least 6 characters long.");
       isValid = false;
     } else {
       setPasswordError(false);
-      setPasswordErrorMessage('');
+      setPasswordErrorMessage("");
     }
 
     return isValid;
@@ -119,50 +117,50 @@ export default function SignInCard() {
   //   </Box>;
   // }
   return (
-    <Card variant='outlined'>
-      <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
+    <Card variant="outlined">
+      <Box sx={{ display: { xs: "flex", md: "none" } }}>
         <EchosMarketIcon />
       </Box>
       <Typography
-        component='h1'
-        variant='h4'
-        sx={{ width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)' }}
+        component="h1"
+        variant="h4"
+        sx={{ width: "100%", fontSize: "clamp(2rem, 10vw, 2.15rem)" }}
       >
         Sign in as <strong>SHOPPER</strong>
       </Typography>
       <Box
-        component='form'
+        component="form"
         onSubmit={handleSubmit}
         noValidate
-        sx={{ display: 'flex', flexDirection: 'column', width: '100%', gap: 2 }}
+        sx={{ display: "flex", flexDirection: "column", width: "100%", gap: 2 }}
       >
         <FormControl>
-          <FormLabel htmlFor='email'>Email</FormLabel>
+          <FormLabel htmlFor="email">Email</FormLabel>
           <TextField
             error={emailError}
             helperText={emailErrorMessage}
-            id='email'
-            type='email'
-            name='email'
-            placeholder='your@email.com'
-            autoComplete='email'
+            id="email"
+            type="email"
+            name="email"
+            placeholder="your@email.com"
+            autoComplete="email"
             autoFocus
             required
             fullWidth
-            variant='outlined'
-            color={emailError ? 'error' : 'primary'}
-            sx={{ ariaLabel: 'email' }}
+            variant="outlined"
+            color={emailError ? "error" : "primary"}
+            sx={{ ariaLabel: "email" }}
           />
         </FormControl>
         <FormControl>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-            <FormLabel htmlFor='password'>Password</FormLabel>
+          <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+            <FormLabel htmlFor="password">Password</FormLabel>
             <Link
-              component='button'
-              type='button'
+              component="button"
+              type="button"
               onClick={handleClickOpen}
-              variant='body2'
-              sx={{ alignSelf: 'baseline' }}
+              variant="body2"
+              sx={{ alignSelf: "baseline" }}
             >
               Forgot your password?
             </Link>
@@ -170,62 +168,62 @@ export default function SignInCard() {
           <TextField
             error={passwordError}
             helperText={passwordErrorMessage}
-            name='password'
-            placeholder='••••••'
-            type='password'
-            id='password'
-            autoComplete='current-password'
+            name="password"
+            placeholder="••••••"
+            type="password"
+            id="password"
+            autoComplete="current-password"
             autoFocus
             required
             fullWidth
-            variant='outlined'
-            color={passwordError ? 'error' : 'primary'}
+            variant="outlined"
+            color={passwordError ? "error" : "primary"}
           />
         </FormControl>
         <FormControlLabel
-          control={<Checkbox value='remember' color='primary' />}
-          label='Remember me'
+          control={<Checkbox value="remember" color="primary" />}
+          label="Remember me"
         />
         <ForgotPassword open={open} handleClose={handleClose} />
         <Button
-          type='submit'
+          type="submit"
           fullWidth
-          variant='contained'
+          variant="contained"
           onClick={validateInputs}
         >
           Sign in
         </Button>
-        <Typography sx={{ textAlign: 'center' }}>
-          Don&apos;t have an account?{' '}
+        <Typography sx={{ textAlign: "center" }}>
+          Don&apos;t have an account?{" "}
           <span>
-            <Link href='/signup' variant='body2' sx={{ alignSelf: 'center' }}>
+            <Link href="/signup" variant="body2" sx={{ alignSelf: "center" }}>
               Sign up
             </Link>
           </span>
         </Typography>
       </Box>
       <Divider>or</Divider>
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-      <Button
+      <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+        <Button
           fullWidth
-          variant='outlined'
-          onClick={() => alert('Sign in with Google')}
+          variant="outlined"
+          onClick={() => navigate('/seller')}
           startIcon={<SellRounded />}
         >
           Go to Seller Dashboard
         </Button>
         <Button
           fullWidth
-          variant='outlined'
-          onClick={() => alert('Sign in with Google')}
+          variant="outlined"
+          onClick={() => alert("Sign in with Google")}
           startIcon={<GoogleIcon />}
         >
           Sign in with Google
         </Button>
         <Button
           fullWidth
-          variant='outlined'
-          onClick={() => alert('Sign in with Facebook')}
+          variant="outlined"
+          onClick={() => alert("Sign in with Facebook")}
           startIcon={<FacebookIcon />}
         >
           Sign in with Facebook

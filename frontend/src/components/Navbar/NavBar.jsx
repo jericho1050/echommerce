@@ -9,6 +9,8 @@ import UserMenu from "./UserMenu";
 import CartButton from "./Cart";
 import NotificationButton from "./Notification";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { isAuthenticatedSelector } from "../../slices/auth";
 const StyledAppBar = styled(AppBar)`
   background-color: rgba(63, 113, 175, 1);
   box-shadow: 0px 2px 16px rgba(0, 0, 0, 0.12);
@@ -36,6 +38,7 @@ const RightSection = styled.div`
 `;
 
 function Navbar() {
+  const isAuthenticated = useSelector(isAuthenticatedSelector);
   return (
     <StyledAppBar position="sticky">
       <StyledToolbar>
@@ -50,9 +53,14 @@ function Navbar() {
         </LeftSection>
         <RightSection>
           {/* <SearchBar /> */}
-          <CartButton />
-          <NotificationButton />
-          <UserMenu />
+
+          {(isAuthenticated && (
+            <>
+              {/* <CartButton /> */}
+              <NotificationButton />
+              <UserMenu />
+            </>
+          )) || <StyledLink to="/signin">Login</StyledLink>}
         </RightSection>
       </StyledToolbar>
     </StyledAppBar>
@@ -65,4 +73,13 @@ const SearchBarImage = styled.img`
   width: 187px;
   height: 41px;
   object-fit: contain;
+`;
+
+const StyledLink = styled(Link)`
+  color: white;
+  text-decoration: none;
+  font-size: 1.2rem;
+  &:hover {
+    color: white;
+  }
 `;

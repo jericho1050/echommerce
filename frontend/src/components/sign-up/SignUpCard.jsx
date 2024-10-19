@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { register, selectAuth } from "../../slices/auth";
+import { register, authSelector } from "../../slices/auth";
 import {
   TextField,
   Button,
@@ -39,7 +39,7 @@ const Card = styled(MuiCard)(({ theme }) => ({
 
 export default function SignUpCard({ role }) {
   const dispatch = useDispatch();
-  const { status, error } = useSelector(selectAuth);
+  const { status, error } = useSelector(authSelector);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [firstName, setFirstName] = useState("");

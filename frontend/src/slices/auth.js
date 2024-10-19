@@ -4,6 +4,7 @@ import storage from "redux-persist/lib/storage";
 
 const initialState = {
   token: null,
+  role: null,
   status: "idle",
   error: null,
 };
@@ -25,7 +26,7 @@ export const login = createAsyncThunk(
         throw new Error(response.statusText);
       }
       const data = await response.json();
-      return data.token;
+      return { token: data.token, role: data.role }; // Return token and role
     } catch (error) {
       return rejectWithValue(error.message);
     }
@@ -49,7 +50,7 @@ export const register = createAsyncThunk(
         throw new Error(response.statusText);
       }
       const data = await response.json();
-      return data.token;
+      return { token: data.token, role: data.role }; // Return token and role
     } catch (error) {
       return rejectWithValue(error.message);
     }
@@ -62,6 +63,7 @@ const authSlice = createSlice({
   reducers: {
     logout: (state) => {
       state.token = null;
+      state.role = null;
     },
   },
   extraReducers: (builder) => {
@@ -71,7 +73,8 @@ const authSlice = createSlice({
       })
       .addCase(login.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.token = action.payload;
+        state.token = action.payload.token;
+        state.role = action.payload.role;
       })
       .addCase(login.rejected, (state, action) => {
         state.status = "failed";
@@ -82,7 +85,8 @@ const authSlice = createSlice({
       })
       .addCase(register.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.token = action.payload;
+        state.token = action.payload.token;
+        state.role = action.payload.role;
       })
       .addCase(register.rejected, (state, action) => {
         state.status = "failed";
@@ -103,6 +107,7 @@ export const persistedAuthReducer = persistReducer(
   authSlice.reducer
 );
 
-export const selectAuth = (state) => state.auth;
+export const authSelector = (state) => state.auth;
+export const isAuthenticatedSelector = (state) => !!state.auth.token && state.auth.role === "shopper";
 
 export default authSlice.reducer;

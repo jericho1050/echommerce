@@ -1,9 +1,14 @@
 # ruff: noqa: ERA001, E501
 """Base settings to build other settings files upon."""
 
+import os
 from pathlib import Path
+import logging
+import environ  # read all exported environment variables in local (however it can't read.env file) idk why bug i guess
 
-import environ
+from dotenv import load_dotenv
+
+load_dotenv()  # read .env file
 
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
 # echommerce/
@@ -15,7 +20,13 @@ if READ_DOT_ENV_FILE:
     # OS environment variables take precedence over variables from .env
     env.read_env(str(BASE_DIR / ".env"))
 
-VITE_API_URL = env.str("VITE_API_URL", default="http://localhost:5173")
+VITE_API_URL = os.getenv("VITE_API_URL")
+
+# Paypal environment variables
+PAYPAL_CLIENT_ID = os.getenv("PAYPAL_CLIENT_ID")
+PAYPAL_CLIENT_SECRET = os.getenv("PAYPAL_CLIENT_SECRET")
+
+
 # GENERAL
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#debug
@@ -145,7 +156,6 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-
 ]
 
 # STATIC
@@ -260,7 +270,6 @@ LOGGING = {
 }
 
 
-
 # django-rest-framework
 # -------------------------------------------------------------------------------
 # django-rest-framework - https://www.django-rest-framework.org/api-guide/settings/
@@ -268,7 +277,7 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework.authentication.TokenAuthentication",
     ),
-    'DEFAULT_PAGINATION_CLASS': 'echommerce.commerce.pagination.PageNumberWithPageSizePagination',
+    "DEFAULT_PAGINATION_CLASS": "echommerce.commerce.pagination.PageNumberWithPageSizePagination",
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
@@ -294,6 +303,3 @@ SPECTACULAR_SETTINGS = {
 }
 # Your stuff...
 # ------------------------------------------------------------------------------
-
-
-

@@ -84,6 +84,7 @@ class Product(models.Model):
 
 
 class Order(models.Model):
+    order_id = models.TextField(unique=True, primary_key=True, blank=False, null=False)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     buyer = models.ForeignKey(User, on_delete=models.CASCADE, related_name="orders")
     total_price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
@@ -109,6 +110,7 @@ class Order(models.Model):
         ],
         default="pending",
     )
+
 
     def __str__(self):
         return f"Order: {self.product.name} Buyer: {self.buyer} Quantity: {self.quantity} Date: {self.order_date}"

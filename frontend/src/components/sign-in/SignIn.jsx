@@ -16,6 +16,8 @@ export async function action({ request }) {
   if (data.role === 'seller') {
     return redirect('/seller');
   } else {
+    localStorage.setItem("token", data.token);
+    localStorage.setItem("role", data.role);
     return redirect('/');
   }
 }

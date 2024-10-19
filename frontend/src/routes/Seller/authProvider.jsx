@@ -1,11 +1,18 @@
 import store from "../../slices/store";
-import { login, logout, selectAuth } from "../../slices/auth";
+import { login, logout, authSelector } from "../../slices/auth";
 
 const authProvider = {
   login: ({ email, password }) => {
     return store.dispatch(login({ email, password })).then((action) => {
       if (login.fulfilled.match(action)) {
-        localStorage.setItem("token", action.payload);
+        const { token, role } = action.payload;
+        if (role === "seller") {
+          localStorage.setItem("token", token);
+          localStorage.setItem("role", role);
+
+        } else {
+          throw new Error("Unauthorized role");
+        }
       } else {
         throw new Error(action.payload);
       }
@@ -14,11 +21,12 @@ const authProvider = {
   logout: () => {
     store.dispatch(logout());
     localStorage.removeItem("token");
+    localStorage.removeItem("role");
     return Promise.resolve();
   },
   checkAuth: () => {
     const state = store.getState();
-    const { token } = selectAuth(state);
+    const { token } = authSelector(state);
     return token ? Promise.resolve() : Promise.reject();
   },
   checkError: (error) => {
@@ -26,6 +34,7 @@ const authProvider = {
     if (status === 401 || status === 403) {
       store.dispatch(logout());
       localStorage.removeItem("token");
+      localStorage.removeItem("role");
       return Promise.reject();
     }
     return Promise.resolve();
@@ -33,7 +42,8 @@ const authProvider = {
   getPermissions: () => Promise.resolve(),
   getIdentity: () => {
     try {
-      const { id, fullName, avatar } = JSON.parse(localStorage.getItem("auth"));
+      const state = store.getState();
+      const { id, fullName, avatar } = authSelector(state);
       return Promise.resolve({ id, fullName, avatar });
     } catch (error) {
       return Promise.reject(error);

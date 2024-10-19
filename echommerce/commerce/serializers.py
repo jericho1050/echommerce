@@ -83,6 +83,8 @@ class ProductSerializer(serializers.ModelSerializer):
 
 
 class OrderSerializer(serializers.ModelSerializer):
+    delivery_address = serializers.CharField(required=False, allow_blank=True)
+
     class Meta:
         model = Order
         fields =  "__all__"

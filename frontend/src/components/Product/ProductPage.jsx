@@ -7,13 +7,16 @@ import AccordionSection from "./AccordionSection";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProduct, productSelector } from "../../slices/product";
 import { useParams } from "react-router-dom";
-
+import { isAuthenticatedSelector } from "../../slices/auth";
+import PaymentDialog from "../Paypal/Payment";
+import { useNavigate } from "react-router-dom";
 const ProductPage = () => {
   const dispatch = useDispatch();
   const { productId } = useParams();
   const { product, loading, hasErrors } = useSelector(productSelector);
+  const isAuthenticated = useSelector(isAuthenticatedSelector);
   const [quantity, setQuantity] = useState(1);
-
+  // const navigate = useNavigate();
   useEffect(() => {
     dispatch(fetchProduct(productId));
   }, [dispatch, productId]);
@@ -21,6 +24,15 @@ const ProductPage = () => {
   const handleQuantityChange = (event) => {
     setQuantity(event.target.value);
   };
+  const price = product.price || 0;
+  // const handleClickPurchase = () => {
+  //   if (!isAuthenticated) {
+  //     navigate("/signin");
+  //     return;
+  //   } else {
+  //     return
+  //   }
+  // };
 
   return loading ? (
     <p>Loading product...</p>
@@ -40,7 +52,7 @@ const ProductPage = () => {
           <ProductHeader>
             <ProductTitle>{product.name || "Text Heading"}</ProductTitle>
             <PriceTag
-              price={product.price || 50}
+              price={price}
               tag={product.category || "10% OFF if you buy 50 or more"}
             />
           </ProductHeader>
@@ -57,9 +69,14 @@ const ProductPage = () => {
               variant="outlined"
             />
           </ProductOptions>
-          <AddToCartButton variant="contained" color="primary">
-            Purchase
+          <AddToCartButton
+            variant="contained"
+            color="primary"
+            disabled
+          >
+            Add to Cart
           </AddToCartButton>
+          <PaymentDialog productId={productId} quantity={quantity} price={price}/>
           <AccordionSection
             title={product.accordionTitle || "Title"}
             content={
@@ -174,17 +191,18 @@ const ProductOptions = styled.div`
 const AddToCartButton = styled(Button)`
   && {
     align-self: stretch;
-    border-radius: 9px;
+    border-radius: 2em;
     background-color: #3f71af;
     margin-top: 27px;
+    margin-bottom: 1em;
     width: 100%;
     gap: 9px;
     overflow: hidden;
     font-size: 18px;
     color: #f5f5f5;
-    font-weight: 400;
+    font-weight: 500;
     line-height: 1;
-    padding: 14px;
+    padding: 1em;
     border: 1px solid #2c2c2c;
     @media (max-width: 991px) {
       max-width: 100%;

@@ -45,6 +45,7 @@ const ItemContent = styled(Box)`
   position: relative;
   min-height: 413px;
   padding: 4.5em;
+
 `;
 
 const StyledTypography = styled(Typography)`

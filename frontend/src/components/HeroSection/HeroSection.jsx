@@ -65,7 +65,7 @@ const StyledGrid = styled(Grid2)(({ theme }) => ({
 function HeroSection() {
   return (
     <StyledHeroSection component="section">
-      <Container>
+      <Container maxWidth="xl">
         <StyledGrid container>
           <Grid2 item xs={12} md={6}>
           </Grid2>

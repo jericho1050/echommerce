@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { IconButton, Menu, MenuItem, Typography } from "@mui/material";
-
+import { useDispatch } from "react-redux";
+import { logout } from "../../slices/auth";
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
 const UserMenuButton = styled(IconButton)`
@@ -18,12 +19,18 @@ const UserMenuImage = styled.img`
 
 function UserMenu() {
   const [anchorElUser, setAnchorElUser] = React.useState(null);
-
+  const dispatch = useDispatch();
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
   };
 
-  const handleCloseUserMenu = () => {
+  const handleCloseUserMenu = (event) => {
+    if (event.target.innerText === "Logout") {
+      dispatch(logout());
+    }
+    if (event.target.innerText === "Account") {
+      return
+    }
     setAnchorElUser(null);
   };
 

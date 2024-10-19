@@ -12,6 +12,7 @@ import {
   Create,
   ImageInput,
   ImageField,
+  ReferenceField,
 } from "react-admin";
 
 export const ProductList = () => (
@@ -38,6 +39,11 @@ export const ProductShow = () => (
       <TextField source="price" />
       <NumberField source="quantity" />
       <NumberField source="seller" />
+      <ReferenceField source="seller" reference="users">
+        <TextField source="first_name" />
+        {" "}
+        <TextField source="last_name" />
+      </ReferenceField>
     </SimpleShowLayout>
   </Show>
 );
