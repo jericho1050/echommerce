@@ -1,5 +1,4 @@
 
-import React from "react";
 import styled from "styled-components";
 import { Card, CardContent, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
@@ -40,7 +39,6 @@ const StyledCard = styled(Card)`
 const ProductImage = styled.img`
   aspect-ratio: 3 / 3;
   height: 300px; /* Set a fixed height for the images */
-
   object-fit: cover;
   object-position: center;
 `;

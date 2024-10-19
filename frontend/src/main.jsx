@@ -15,6 +15,8 @@ import Index from "./routes/Index";
 import { Provider } from "react-redux";
 import ProductPage from "./components/Product/ProductPage";
 import store from "./slices/store";
+import Account, { loader as accountLoader } from "./routes/Account";
+import ProtectedRoute from "./utils/ProtectedRoute";
 
 const theme = createTheme({
   palette: {
@@ -46,9 +48,18 @@ const router = createBrowserRouter([
           },
           {
             path: "product/:productId",
-            element: <ProductPage />
-
-          }
+            element: <ProductPage />,
+          },
+          {
+            element: <ProtectedRoute />,
+            children: [
+              {
+                path: "/account/:userId",
+                element: <Account />,
+                loader: accountLoader,
+              },
+            ],
+          },
         ],
       },
     ],
@@ -64,10 +75,14 @@ const router = createBrowserRouter([
     action: signUpAction,
   },
   {
-    path: "/seller/*",
-    element: <SellerDashboard />,
+    element: <ProtectedRoute />,
+    children: [
+      {
+        path: "/seller/*",
+        element: <SellerDashboard />,
+      },
+    ],
   },
-  
 ]);
 
 createRoot(document.getElementById("root")).render(

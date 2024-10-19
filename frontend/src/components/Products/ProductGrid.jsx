@@ -1,62 +1,16 @@
-import React from "react";
 import styled from "styled-components";
 import {
   TextField,
   Button,
-  Card,
-  CardContent,
   Typography,
-  Container,
+
 } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 
 import SearchIcon from "@mui/icons-material/Search";
 import ProductCard from "./ProductCard";
 
-// const productData = [
-//   {
-//     id: 1,
-//     image:
-//       "https://cdn.builder.io/api/v1/image/assets/TEMP/4a2a257073c2d9c1d313149c6eea8a145c71ee499921518d99d4e52f7b907280?placeholderIfAbsent=true&apiKey=f172625736fa41d8974274ecdf85e2d7",
-//     text: "Text",
-//     price: "$0",
-//   },
-//   {
-//     id: 2,
-//     image:
-//       "https://cdn.builder.io/api/v1/image/assets/TEMP/6b3dabd113b746e760cebd8a6cd3380b76b612b89c059a89873feabc0a14b03e?placeholderIfAbsent=true&apiKey=f172625736fa41d8974274ecdf85e2d7",
-//     text: "Text",
-//     price: "$0",
-//   },
-//   {
-//     id: 3,
-//     image:
-//       "https://cdn.builder.io/api/v1/image/assets/TEMP/df65a7cd4cb1691509852acba505c17ce542230f7a22147ea1cec72d29c94c43?placeholderIfAbsent=true&apiKey=f172625736fa41d8974274ecdf85e2d7",
-//     text: "Text",
-//     price: "$0",
-//   },
-//   {
-//     id: 4,
-//     image:
-//       "https://cdn.builder.io/api/v1/image/assets/TEMP/ecf70e2c72b0590aa1d4fd27e990006d96ca9e2444550096e24d1c5ae1af370b?placeholderIfAbsent=true&apiKey=f172625736fa41d8974274ecdf85e2d7",
-//     text: "Text",
-//     price: "$0",
-//   },
-//   {
-//     id: 5,
-//     image:
-//       "https://cdn.builder.io/api/v1/image/assets/TEMP/dae56cb82265490f83c51456568619c4474cee4fc5d24d17438a164aa27c1a9f?placeholderIfAbsent=true&apiKey=f172625736fa41d8974274ecdf85e2d7",
-//     text: "Text",
-//     price: "$0",
-//   },
-//   {
-//     id: 6,
-//     image:
-//       "https://cdn.builder.io/api/v1/image/assets/TEMP/5ea175ba0149f81f0fb551987f4e84c7460236ef03a769b3d8de556fd98a32b6?placeholderIfAbsent=true&apiKey=f172625736fa41d8974274ecdf85e2d7",
-//     text: "Text",
-//     price: "$0",
-//   },
-// ];
+
 
 function ProductGrid({ products }) {
   return (
@@ -94,7 +48,7 @@ function ProductGrid({ products }) {
 
       <Grid container rowSpacing={8} columnSpacing={6} px={4}>
         {products.map((product) => (
-          <Grid item xs={12} sm={6} md={3} key={product.id}>
+          <Grid key={product.id} size={4}>
             <ProductCard {...product} />
           </Grid>
         ))}
@@ -122,7 +76,6 @@ const StyledSection = styled.section`
 const FilterBar = styled.div`
   padding: 0 2em;
   display: flex;
-
   align-items: center;
   gap: 1em 2.5em;
   font-weight: 400;

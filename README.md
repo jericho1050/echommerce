@@ -7,7 +7,7 @@ License: MIT
 
 ## Getting Started (Running Locally)
 
-***Note: you must have a running Postgre Database***
+***Note: you must have your own running Postgre Database***
 
 1. Clone Repository and change directory
 
@@ -46,6 +46,8 @@ License: MIT
     PAYPAL_CLIENT_SECRET="YOUR CLIENT SECRET"
     ```
 
+    One more thing is to [create and use a test account](https://developer.paypal.com/dashboard/accounts) for the PayPal sandbox when mocking a paymentt.
+
 5. Apply the database schema
 
     ```sh
@@ -71,6 +73,7 @@ License: MIT
     ```
 
     You may now access the admin interface <http://127.0.0.1:8000/admin>
+    also the generated rest api docs <http://127.0.0.1:8000/api/docs>
 
 8. Create another `.env` in root `/frontend` directory
 
@@ -94,6 +97,8 @@ License: MIT
     ```sh
      Local:   http://localhost:5173/
      ```
+
+
 
 ## Settings
 

@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { IconButton, Menu, MenuItem, Typography } from "@mui/material";
-import { useDispatch } from "react-redux";
-import { logout } from "../../slices/auth";
+import { useDispatch, useSelector } from "react-redux";
+import { authSelector, logout } from "../../slices/auth";
+import { Link, useNavigate } from "react-router-dom";
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
 const UserMenuButton = styled(IconButton)`
@@ -19,7 +20,9 @@ const UserMenuImage = styled.img`
 
 function UserMenu() {
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const { userId } = useSelector(authSelector);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
   };
@@ -27,10 +30,13 @@ function UserMenu() {
   const handleCloseUserMenu = (event) => {
     if (event.target.innerText === "Logout") {
       dispatch(logout());
+      window.location.reload();
     }
+
     if (event.target.innerText === "Account") {
-      return
+      navigate(`/account/${userId}`);
     }
+
     setAnchorElUser(null);
   };
 
@@ -64,7 +70,6 @@ function UserMenu() {
           </MenuItem>
         ))}
       </Menu>
-
     </>
   );
 }

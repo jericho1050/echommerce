@@ -120,7 +120,7 @@ class OrderViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         if self.request.user.is_authenticated and self.request.user.role == "shopper":
             return Order.objects.filter(
-                user=self.request.user
+                buyer=self.request.user
             )  # shopper can see all their orders
         return Order.objects.filter(
             product__seller=self.request.user

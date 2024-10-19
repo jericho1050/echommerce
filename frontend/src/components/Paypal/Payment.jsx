@@ -1,8 +1,9 @@
-import {  useState } from "react";
+import { useState } from "react";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import { useDispatch, useSelector } from "react-redux";
 import { authSelector } from "../../slices/auth";
 import { openSnackbar } from "../../slices/snackbar";
+import { useNavigate } from "react-router-dom";
 // Renders errors or successfull transactions on the screen.
 function Message({ content }) {
   return <p>{content}</p>;
@@ -10,7 +11,9 @@ function Message({ content }) {
 
 function PaymentDialog({ productId, quantity, price }) {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { token } = useSelector(authSelector);
+  const isAuthenticated = token ? true : false;
   const initialOptions = {
     "client-id": import.meta.env.VITE_PAYPAL_CLIENT_ID,
     "enable-funding": "venmo",
@@ -66,7 +69,11 @@ function PaymentDialog({ productId, quantity, price }) {
               }
             } catch (error) {
               console.error(error);
-              setMessage(`Could not initiate PayPal Checkout...${error}`);
+              dispatch(openSnackbar({ status: "error", id: error.message }));
+              setMessage(`Could not initiate PayPal Checkout`);
+              if (!isAuthenticated) {
+                navigate("/signin");
+              }
             }
           }}
           onApprove={async (data, actions) => {
@@ -113,10 +120,13 @@ function PaymentDialog({ productId, quantity, price }) {
                 // setMessage(
                 //   `Transaction ${transaction.status}: ${transaction.id}. See console for all available details`
                 // );
-                dispatch(openSnackbar({ status: "success", id: transaction.id }));
+                dispatch(
+                  openSnackbar({ status: "success", id: transaction.id })
+                );
               }
             } catch (error) {
               console.error(error);
+              dispatch(openSnackbar({ status: "error", id: error.message }));
               setMessage(
                 `Sorry, your transaction could not be processed...${error}`
               );

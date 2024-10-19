@@ -7,6 +7,7 @@ const initialState = {
   role: null,
   status: "idle",
   error: null,
+  userId: null,
 };
 
 export const login = createAsyncThunk(
@@ -26,7 +27,8 @@ export const login = createAsyncThunk(
         throw new Error(response.statusText);
       }
       const data = await response.json();
-      return { token: data.token, role: data.role }; // Return token and role
+  
+      return { token: data.token, role: data.role, userId: data.user_id }; // Return token and role
     } catch (error) {
       return rejectWithValue(error.message);
     }
@@ -50,7 +52,7 @@ export const register = createAsyncThunk(
         throw new Error(response.statusText);
       }
       const data = await response.json();
-      return { token: data.token, role: data.role }; // Return token and role
+      return { token: data.token, role: data.role, userId: data.user_id }; // Return token and role
     } catch (error) {
       return rejectWithValue(error.message);
     }
@@ -67,6 +69,7 @@ const authSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
+
     builder
       .addCase(login.pending, (state) => {
         state.status = "loading";
@@ -75,6 +78,7 @@ const authSlice = createSlice({
         state.status = "succeeded";
         state.token = action.payload.token;
         state.role = action.payload.role;
+        state.userId = action.payload.userId;
       })
       .addCase(login.rejected, (state, action) => {
         state.status = "failed";
@@ -87,6 +91,7 @@ const authSlice = createSlice({
         state.status = "succeeded";
         state.token = action.payload.token;
         state.role = action.payload.role;
+        state.userId = action.payload.userId;
       })
       .addCase(register.rejected, (state, action) => {
         state.status = "failed";
