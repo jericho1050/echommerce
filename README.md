@@ -1,11 +1,99 @@
-# echommerce
+# Echommerce
 
 A web app echommerce :D
 
-[![Built with Cookiecutter Django](https://img.shields.io/badge/built%20with-Cookiecutter%20Django-ff69b4.svg?logo=cookiecutter)](https://github.com/cookiecutter/cookiecutter-django/)
-[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 
 License: MIT
+
+## Getting Started (Running Locally)
+
+***Note: you must have a running Postgre Database***
+
+1. Clone Repository and change directory
+
+    ```sh
+    % git clone https://github.com/jericho1050/echommerce.git
+    % cd echommerce
+    ```
+
+2. Set Up your virtual env and activate it
+
+    ```sh
+    % python -m venv env
+    % source env/bin/activate
+    ```
+
+3. Download all the necessary dependencies
+
+    ```sh
+    (env) echommerce % pip install -r requirements/local.txt
+    ```
+
+4. Create the enviroment variables in root directory
+
+    ```sh
+    (env) echommerce % touch .env
+    ```
+
+    ```py
+    # e.g format: postgresql://[user[:password]@][host][:port][/dbname][?param1=value1&...]
+    DATABASE_URL="postgresql://postgres:123@localhost:5432/echommerce"
+    VITE_API_URL="http://localhost:5173"
+
+    # https://developer.paypal.com/dashboard/applications/sandbox
+    # Create APP and Copy paste the credentials in here
+    PAYPAL_CLIENT_ID="YOUR PAYPAL CLIENT ID"
+    PAYPAL_CLIENT_SECRET="YOUR CLIENT SECRET"
+    ```
+
+5. Apply the database schema
+
+    ```sh
+    (env) echommerce % python manage.py migrate
+    ```
+
+6. Create an admin account / superuser
+
+    ```sh
+   (env) echommerce % python manage.py createsuperuser 
+   ```
+
+7. Run the backend server
+
+    ```sh
+    (env) echommerce % python manage.py runserver
+    ```
+
+    You should see something like this
+
+    ```sh
+    Starting development server at http://127.0.0.1:8000/
+    ```
+
+    You may now access the admin interface <http://127.0.0.1:8000/admin>
+
+8. Create another `.env` in root `/frontend` directory
+
+    ```py
+    VITE_REST_API_URL=http://localhost:8000
+    # I know know, it's a duplicate. just paste it
+    VITE_PAYPAL_CLIENT_ID=YOUR_CLIENT_ID
+    VITE_PAYPAL_CLIENT_SECRET=YOUR_CLIENT_SECRET
+    ```
+
+9. Open A New terminal then cd to frontend directory do these
+
+    ```sh
+     echommerce % cd frontend
+     frontend % npm install --legacy-peer-deps
+     frontend % npm run dev    
+    ```
+
+    Your frontend should also be now running
+
+    ```sh
+     Local:   http://localhost:5173/
+     ```
 
 ## Settings
 
@@ -19,7 +107,7 @@ Moved to [settings](http://cookiecutter-django.readthedocs.io/en/latest/settings
 
 - To create a **superuser account**, use this command:
 
-      $ python manage.py createsuperuser
+    python manage.py createsuperuser
 
 For convenience, you can keep your normal user logged in on Chrome and your superuser logged in on Firefox (or similar), so that you can see how the site behaves for both kinds of users.
 
@@ -27,19 +115,19 @@ For convenience, you can keep your normal user logged in on Chrome and your supe
 
 Running type checks with mypy:
 
-    $ mypy echommerce
+    mypy echommerce
 
 ### Test coverage
 
 To run the tests, check your test coverage, and generate an HTML coverage report:
 
-    $ coverage run -m pytest
-    $ coverage html
-    $ open htmlcov/index.html
+    coverage run -m pytest
+    coverage html
+    open htmlcov/index.html
 
 #### Running tests with pytest
 
-    $ pytest
+    pytest
 
 ### Live reloading and Sass CSS compilation
 
